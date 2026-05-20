@@ -1,12 +1,9 @@
-import type { ReactNode } from "react"
 import Sidebar from "../components/Sidebar"
 import Header from "../components/Header"
+import { Outlet } from "react-router-dom"
 
-type Props = {
-    children: ReactNode
-}
 
-export default function DashboardLayout({ children }: Props) {
+export default function AppLayout() {
     return (
         <div className="flex h-screen bg-gray-100">
 
@@ -17,7 +14,7 @@ export default function DashboardLayout({ children }: Props) {
                 <Header />
 
                 <main className="p-6 overflow-y-auto">
-                    {children}
+                    {<Outlet />}
                 </main>
 
             </div>

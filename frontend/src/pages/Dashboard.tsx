@@ -1,16 +1,39 @@
-import DashboardLayout from "../layout/DashboardLayout"
 import StatCard from "../components/StatCard"
+import { useState, useEffect } from "react"
+import type { DashboardData } from "../types/dashboard"
 
 export default function Dashboard() {
+
+    const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
+
+    useEffect(() => {
+        fetch("http://localhost:8080/dashboard")
+            .then(res => res.json())
+            .then((data: DashboardData) => {
+                setDashboardData(data)
+                console.log(data)
+            })
+    }, [])
+
     return (
-        <DashboardLayout>
+        <div>
 
-            <div className="grid grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-3 gap-4 mb-6">
 
-                <StatCard title="Appointments Today" value={12} />
-                <StatCard title="Pending Messages" value={8} />
-                <StatCard title="Sent Today" value={20} />
-                <StatCard title="Failed Messages" value={1} />
+                <StatCard
+                    title="Appointments Today"
+                    value={dashboardData?.appointmentsToday ?? 0}
+                />
+
+                <StatCard
+                    title="Pending Messages"
+                    value={dashboardData?.pendingMessages ?? 0}
+                />
+
+                <StatCard
+                    title="Sent Today"
+                    value={dashboardData?.sentToday ?? 0}
+                />
 
             </div>
 
@@ -18,6 +41,6 @@ export default function Dashboard() {
                 Upcoming schedules table
             </div>
 
-        </DashboardLayout>
+        </div>
     )
 }
