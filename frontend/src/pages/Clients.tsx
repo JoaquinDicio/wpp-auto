@@ -1,3 +1,35 @@
-export default function Clients () {
-    return  <section><h1>Clients</h1></section>
+import { useState, useEffect } from "react";
+import type { Client } from '../types/db'
+import NewClientForm from "../components/NewClientForm";
+
+export default function Clients() {
+
+    const [clients, setClients] = useState<Client[]>([])
+
+    useEffect(() => {
+
+        const fetchClients = async () => {
+            try {
+                const res = await fetch("http://localhost:8080/clients");
+                const data = await res.json();
+                setClients(data);
+            } catch (err) {
+                console.error("Error:", err);
+            }
+        };
+
+        fetchClients();
+    }, []);
+
+    return <div>
+        <NewClientForm setClients={setClients} />
+        <ul className="pt-10 grid gap-2 grid-cols-3">
+            {clients.map((client) =>
+                <li key={client.id} className="bg-white w-full hover:shadow-sm duration-75 p-4 rounded-sm">
+                    <p className="font-bold">{client.name}</p>
+                    <i className="text-sm">{client.phone}</i>
+                </li>
+            )}
+        </ul>
+    </div>
 }

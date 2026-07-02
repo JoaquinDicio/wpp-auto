@@ -11,7 +11,6 @@ export default function Dashboard() {
             .then(res => res.json())
             .then((data: DashboardData) => {
                 setDashboardData(data)
-                console.log(data)
             })
     }, [])
 
