@@ -8,11 +8,13 @@ interface Props {
 export default function NewClientForm({ setClients }: Props) {
 
     const [posting, setPosting] = useState<boolean>(false)
+    const [error, setError] = useState<string | null>(null)
 
     async function addClient(e: React.FormEvent<HTMLFormElement>) {
 
         e.preventDefault();
         setPosting(true)
+        setError(null)
 
         try {
             const form = e.currentTarget;
@@ -31,14 +33,17 @@ export default function NewClientForm({ setClients }: Props) {
                 body: JSON.stringify(newClient),
             });
 
-            const data: Client = await res.json();
-
-            if (data) {
-                setClients(prev => [...prev, data])
-                form.reset()
+            if (!res.ok) {
+                const error = await res.json();
+                throw new Error(error.message || "Error adding client");
             }
 
+            const data: Client = await res.json();
+            setClients(prev => [...prev, data])
+            form.reset()
+
         } catch (err) {
+            setError(err instanceof Error ? err.message : "Error adding client");
             console.error("Error:", err);
         }
         finally {
@@ -52,5 +57,6 @@ export default function NewClientForm({ setClients }: Props) {
         <button disabled={posting} className="rounded-sm bg-blue-500 text-white p-2">
             {posting ? "Agregando..." : "Agregar"}
         </button>
+        {error && <p className="text-red-500">{error}</p>}
     </form>
 }

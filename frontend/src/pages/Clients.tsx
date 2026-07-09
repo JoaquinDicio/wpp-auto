@@ -5,6 +5,7 @@ import NewClientForm from "../components/NewClientForm";
 export default function Clients() {
 
     const [clients, setClients] = useState<Client[]>([])
+    const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
 
@@ -14,12 +15,17 @@ export default function Clients() {
                 const data = await res.json();
                 setClients(data);
             } catch (err) {
+                setError("Error fetching clients");
                 console.error("Error:", err);
             }
         };
 
         fetchClients();
     }, []);
+
+    if (error) {
+        return <div className="text-red-500">{error}</div>;
+    }
 
     return <div>
         <NewClientForm setClients={setClients} />
